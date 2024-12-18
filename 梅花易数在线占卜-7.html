@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梅花易数在线占卜</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        label {
+            font-size: 1.2em;
+        }
+        input {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        /* Background colors for numbers 0-7 */
+        .bg-0 { background-color: #ffcccc; } /* Light Red */
+        .bg-1 { background-color: #ccffcc; } /* Light Green */
+        .bg-2 { background-color: #ccccff; } /* Light Blue */
+        .bg-3 { background-color: #ffffcc; } /* Light Yellow */
+        .bg-4 { background-color: #ffccff; } /* Light Purple */
+        .bg-5 { background-color: #ccffff; } /* Light Cyan */
+        .bg-6 { background-color: #ffff99; } /* Light Yellow-Green */
+        .bg-7 { background-color: #ffcce6; } /* Light Pink */
+        .highlight {
+            border: 3px solid black;
+            animation: flash 1s infinite;
+        }
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .metal { color: gold; }
+        .wood { color: green; }
+        .water { color: blue; }
+        .fire { color: red; }
+        .earth { color: brown; }
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f4f4f4;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>梅花易数在线占卜</h1>
+    <form id="divinationForm">
+        <label for="x">请输入随机数字 (0-99):</label>
+        <input type="number" id="x" name="x" min="0" max="99" required>
+        <label for="y">请输入随机数字 (0-99):</label>
+        <input type="number" id="y" name="y" min="0" max="99" required>
+        <button type="submit">默念所求问题点击占卜</button>
+    </form>
+    <div id="result" class="result" style="display:none;">
+        <h3>占卜结果:</h3>
+        <p><strong>上卦:</strong> <span id="upperTrigram"></span></p>
+        <p><strong>下卦:</strong> <span id="lowerTrigram"></span></p>
+        <p><strong>六爻卦象:</strong> <span id="hexagramSymbol"></span> <span id="hexagramName"></span></p>
+        <p><strong>生克关系:</strong> <span id="relationship"></span></p>
+        <p><strong>解释:</strong> <span id="explanation"></span></p>
+        <p><strong>卦辞:</strong> <span id="hexagramJudgment"></span></p>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="9">生克关系表</th>
+                </tr>
+                <tr>
+                    <th>下卦\上卦</th>
+                    <th>0<br>(坤)<br>(土)</th>
+                    <th>1<br>(乾)<br>(金)</th>
+                    <th>2<br>(兑)<br>(金)</th>
+                    <th>3<br>(离)<br>(火)</th>
+                    <th>4<br>(震)<br>(木)</th>
+                    <th>5<br>(巽)<br>(木)</th>
+                    <th>6<br>(坎)<br>(水)</th>
+                    <th>7<br>(艮)<br>(土)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0<br>(坤)<br>(土)</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-0">0</td>
+                </tr>
+                <tr>
+                    <td>1<br>(乾)<br>(金)</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-3">3</td>
+                </tr>
+                <tr>
+                    <td>2<br>(兑)<br>(金)</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-3">3</td>
+                </tr>
+                <tr>
+                    <td>3<br>(离)<br>(火)</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-4">4</td>
+                </tr>
+                <tr>
+                    <td>4<br>(震)<br>(木)</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-1">1</td>
+                </tr>
+                <tr>
+                    <td>5<br>(巽)<br>(木)</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-1">1</td>
+                </tr>
+                <tr>
+                    <td>6<br>(坎)<br>(水)</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-2">2</td>
+                </tr>
+                <tr>
+                    <td>7<br>(艮)<br>(土)</td>
+                    <td class="bg-0">0</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-4">4</td>
+                    <td class="bg-3">3</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-2">2</td>
+                    <td class="bg-1">1</td>
+                    <td class="bg-2">2</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="errorMessage" class="error" style="display:none;"></div>
+</div>
+
+<footer>
+    Power by bobochi
+</footer>
+
+<script>
+    function cl() {
+        const reg = new RegExp("^[0-9]*$");
+        const x = document.getElementById("x").value.trim();
+        const y = document.getElementById("y").value.trim();
+        if (x.length < 1 || y.length < 1 || !reg.test(x) || !reg.test(y)) {
+            document.getElementById('errorMessage').textContent = "请输入有效的数字，范围为0到99。";
+            document.getElementById('errorMessage').style.display = "block";
+            return;
+        }
+        const c = (Number(x) + Number(y)) % 6;
+        // 上卦
+        const upperTrigram = x % 8;
+        // 下卦
+        const lowerTrigram = y % 8;
+        
+        const trigramNames = ["坤", "乾", "兑", "离", "震", "巽", "坎", "艮"];
+        const trigramElements = ["土", "金", "金", "火", "木", "木", "水", "土"];
+        const trigramElementClasses = ["earth", "metal", "metal", "fire", "wood", "wood", "water", "earth"];
+        const trigramSymbols = ["☷", "☰", "☱", "☲", "☳", "☴", "☵", "☶"];
+        
+        const hexagrams = [
+            { symbol: "䷀", name: "乾", judgment: "天行健，君子以自强。" },
+            { symbol: "䷁", name: "坤", judgment: "地势坤，君子以厚德载物。" },
+            { symbol: "䷂", name: "屯", judgment: "刚柔始交而难生，动乎险中大亨贞，雷雨之动满盈。" },
+            { symbol: "䷃", name: "蒙", judgment: "山下出泉，蒙；君子以果行育德。" },
+            { symbol: "䷄", name: "需", judgment: "云上于天，需；君子以饮食宴乐。" },
+            { symbol: "䷅", name: "讼", judgment: "天与水违行，讼；君子期而不求，大人施舍，刑错四术，列位应时，上下和同。" },
+            { symbol: "䷆", name: "师", judgment: "地中有水，师；君子以容民畜众。" },
+            { symbol: "䷇", name: "比", judgment: "地上有水，比；先王以建万国亲诸侯。" },
+            { symbol: "䷈", name: "小畜", judgment: "风行天上，小畜；君子以懿文节慎。" },
+            { symbol: "䷉", name: "履", judgment: "上天下泽，履；君子以辨上下，安左右，知险夷，辩治乱。" },
+            { symbol: "䷊", name: "泰", judgment: "天地交，泰；后以财成天地之道，辅相天地之宜，以右民。" },
+            { symbol: "䷋", name: "否", judgment: "天地不交，否；君子俭约休否。" },
+            { symbol: "䷌", name: "同人", judgment: "天与火，同人；君子以类族辨物。" },
+            { symbol: "䷍", name: "大有", judgment: "火在天上，大有；君子以遏恶扬善，顺天休命。" },
+            { symbol: "䷎", name: "谦", judgment: "地中有山，谦；君子以裒多益寡，称物平施。" },
+            { symbol: "䷏", name: "豫", judgment: "雷出地奋，豫；先王以作乐崇德，殷荐之上帝，以配祖考。" },
+            { symbol: "䷐", name: "随", judgment: "泽中有木，随；君子以诚信，作为义。" },
+            { symbol: "䷑", name: "蛊", judgment: "山下有风，蛊；君子以振民育德。" },
+            { symbol: "䷒", name: "临", judgment: "地中有雷，临；君子以教思无穷，容保民无疆。" },
+            { symbol: "䷓", name: "观", judgment: "风行地上，观；先王以省方观民设教。" },
+            { symbol: "䷔", name: "噬嗑", judgment: "雷电噬嗑，先王以明罚敕法。" },
+            { symbol: "䷕", name: "贲", judgment: "山下有火，贲；君子以明庶政，无敢折狱。" },
+            { symbol: "䷖", name: "剥", judgment: "山上剥，剥；不利有攸往。" },
+            { symbol: "䷗", name: "复", judgment: "雷在地中，复；先王以至日闭关，商旅不行，后不省方。" },
+            { symbol: "䷘", name: "无妄", judgment: "天下雷行，无妄；先王以茂对时，修徳行谊。" },
+            { symbol: "䷙", name: "大畜", judgment: "天在田上，大畜；君子以多识前言往行，以辅相断吉凶。" },
+            { symbol: "䷚", name: "颐", judgment: "山下有雷，颐；君子以慎言语，节饮食。" },
+            { symbol: "䷛", name: "损", judgment: "山下有泽，损；君子以惩忿窒欲。" },
+            { symbol: "䷜", name: "益", judgment: "风雷益，君子见贤而思齐焉。" },
+            { symbol: "䷝", name: "夬", judgment: "泽上于天，夬；君子以决疑志也。" },
+            { symbol: "䷞", name: "姤", judgment: "天与水相遇，姤；后以施命诰四方。" },
+            { symbol: "䷟", name: "萃", judgment: "泽上于地，萃；君子以聚群会友。" },
+            { symbol: "䷠", name: "升", judgment: "地中生木，升；君子以顺德，积小以高大之事。" },
+            { symbol: "䷡", name: "困", judgment: "泽无水，困；君子以致命遂志也。" },
+            { symbol: "䷢", name: "井", judgment: "木上有水，井；君子以劳民劝相。" },
+            { symbol: "䷣", name: "革", judgment: "泽中有火，革；君子豹变，小人革面。" },
+            { symbol: "䷤", name: "鼎", judgment: "木上有火，鼎；君子以正位凝命。" },
+            { symbol: "䷥", name: "震", judgment: "洩雷风，震惊百里者；以其惊众阴之散也。" },
+            { symbol: "䷦", name: "艮", judgment: "兼山，艮；君子以止居家。" },
+            { symbol: "䷧", name: "渐", judgment: "鸿渐于陆，其羽可用为仪，吉。" },
+            { symbol: "䷨", name: "归妹", judgment: "征邑，无咎；利涉大川，返还来邦。" },
+            { symbol: "䷩", name: "丰", judgment: "雷电皆入地下，丰；君子以折狱致刑。" },
+            { symbol: "䷪", name: "旅", judgment: "山上有火，旅；君子以处失而亨行。" },
+            { symbol: "䷫", name: "巽", judgment: "重巽以申命，刚巽乎中正而志行，是以鸣晦亨。" },
+            { symbol: "䷬", name: "兑", judgment: "丽泽，兑；君子以朋友讲习。" },
+            { symbol: "䷭", name: "涣", judgment: "风行水上，涣；先王以享于帝立庙。" },
+            { symbol: "䷮", name: "节", judgment: "水在草上，节；君子以制器适道。" },
+            { symbol: "䷯", name: "中孚", judgment: "信及豚鱼，吉；利涉大川，乘木舟。" },
+            { symbol: "䷰", name: "小过", judgment: "山上有飞鸟，小过；可小事不可大事。利于飞。" },
+            { symbol: "䷱", name: "既济", judgment: "水在火上，既济；君子以思患而预防之。" },
+            { symbol: "䷲", name: "未济", judgment: "火在水上，未济；君子以慎辨物居方。" }
+        ];
+
+        const X = [
+            "次吉，70分。外部环境“比合”自己：此事顺心顺意，百无禁忌。",
+            "中吉，50分。自己“克”外部环境：自己能力足以完成达成心愿，但需要付出努力。",
+            "大凶，10分。外部环境“克”自己：此事难成，有阻力，多坎坷。",
+            "大吉，90分。外部环境“生”自己：此事可谋，有人帮扶、促进。",
+            "小凶，30分。自己“生”外部环境：此事耗精力，需付出时间精力钱财方可成。"
+        ];
+        // 生克关系表
+        const Y = [
+            [0, 4, 4, 3, 2, 2, 1, 0],
+            [3, 0, 0, 2, 1, 1, 4, 3],
+            [3, 0, 0, 2, 1, 1, 4, 3],
+            [4, 1, 1, 0, 3, 3, 2, 4],
+            [1, 2, 2, 4, 0, 0, 3, 1],
+            [1, 2, 2, 4, 0, 0, 3, 1],
+            [2, 3, 3, 1, 4, 4, 0, 2],
+            [0, 4, 4, 3, 2, 2, 1, 2]
+        ];
+        // 关系区分
+        let relationship;
+        if (c === 1 || c === 2 || c === 3) {
+            relationship = Y[upperTrigram][lowerTrigram];
+        } else if (c === 0 || c === 4 || c === 5) {
+            relationship = Y[lowerTrigram][upperTrigram];
+        }
+        const explanation = X[relationship];
+
+        // 计算六爻卦象
+        const hexagramIndex = lowerTrigram * 8 + upperTrigram;
+        const hexagram = hexagrams[hexagramIndex];
+
+        // 显示结果
+        document.getElementById('upperTrigram').innerHTML = `${upperTrigram} (${trigramNames[upperTrigram]}) ${trigramSymbols[upperTrigram]} (<span class="${trigramElementClasses[upperTrigram]}">${trigramElements[upperTrigram]}</span>)`;
+        document.getElementById('lowerTrigram').innerHTML = `${lowerTrigram} (${trigramNames[lowerTrigram]}) ${trigramSymbols[lowerTrigram]} (<span class="${trigramElementClasses[lowerTrigram]}">${trigramElements[lowerTrigram]}</span>)`;
+        document.getElementById('hexagramSymbol').textContent = hexagram.symbol;
+        document.getElementById('hexagramName').textContent = hexagram.name;
+        document.getElementById('relationship').textContent = relationship;
+        document.getElementById('explanation').textContent = explanation;
+        document.getElementById('hexagramJudgment').textContent = hexagram.judgment;
+
+        // 高亮显示关系表中的对应数字
+        const tableCells = document.querySelectorAll('#result table tbody tr');
+        tableCells.forEach(row => {
+            row.querySelectorAll('td').forEach(cell => {
+                cell.classList.remove('highlight');
+            });
+        });
+        const targetCell = document.querySelector(`#result table tbody tr:nth-child(${lowerTrigram + 1}) td:nth-child(${upperTrigram + 2})`);
+        if (targetCell) {
+            targetCell.classList.add('highlight');
+        }
+
+        document.getElementById('result').style.display = "block";
+        document.getElementById('errorMessage').style.display = "none";
+    }
+
+    document.getElementById('divinationForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        cl();
+    });
+</script>
+
+</body>
+</html>
